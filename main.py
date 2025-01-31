@@ -181,7 +181,6 @@ def move (key, joueur):
         next_move = x, y - 1
     return(next_move)
 
-
 def main():
     map = arena(30,30)
     print_bg(arena(LENGHT, WIDTH))
@@ -194,7 +193,6 @@ def main():
         event = keyboard.read_event()
         if event.event_type == keyboard.KEY_DOWN :
             key = event.name
-            
         next_move = move(key, joueur)
         next_type = TYPES(map[next_move])
 
