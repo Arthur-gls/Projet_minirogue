@@ -1,7 +1,6 @@
 
 import time
-import time
-import time
+import random as rd
 import os 
 import keyboard
 import copy
@@ -38,7 +37,6 @@ class Objets:
 
 class Sac(Objets):
     def __init__ (self):
-        self.compteur_or = 0
         self.armes = [Objets.arme_de_base]
         self.armures = []
         self.potions = {'bouteille_eau' : 0, 'bouteille_whisky' : 0, 'poison' : 0, 'potion_guerison' : 0}
@@ -158,8 +156,6 @@ def arena(LENGHT, WIDTH):
 
 #print(arena(LENGHT, WIDTH))
 
-import random as rd
-
 def random_arena(l,w):
     pass
 
@@ -194,7 +190,7 @@ TYPES = {'_' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor'
 
 
 
-def move (key, joueur):
+def move(key, joueur):
     x,y = joueur.coord_x, joueur.coord_y
     next_position = x,y
     if key == 'gauche' :
@@ -213,25 +209,48 @@ def valid_move(key, joueur, map):
     if next_type != "wall" :
         return True
 
-def event(key, joueur, map, original_map):
+def event(key, joueur, map, original_map, sac_ouvert):
     if key == 'space' :
         sac_ouvert = not sac_ouvert
-        # A FAIRE: afficher le sac ou la carte
     
-    if key in ['gauche', 'droite', 'haut', 'bas'] :
-        if valid_move(key, joueur, map):
-            ancien_x, ancien_y = joueur.coord_x, joueur.coord_y
-            ancien_symbole = original_map[ancien_x][ancien_y]
-            symbol = map[move(key, joueur)[0]][move(key, joueur)[1]]
-            next_type = TYPES[symbol]
-            if next_type != "enemy" :
-                joueur.move(move(key, joueur))
-                ancien_type = TYPES[ancien_symbole]
-                if ancien_type in ("corridor", "door", "staircase"):
-                    map[ancien_x][ancien_y] = ancien_symbole # On remet le point de départ à sa valeur initiale
-                else:
-                    map[ancien_x][ancien_y] = "."
-                map[joueur.coord_x][joueur.coord_y] = "@"
+    if not(sac_ouvert) :
+        if key in ['gauche', 'droite', 'haut', 'bas'] :
+            if valid_move(key, joueur, map):
+                ancien_x, ancien_y = joueur.coord_x, joueur.coord_y
+                ancien_symbole = original_map[ancien_x][ancien_y]
+                symbol = map[move(key, joueur)[0]][move(key, joueur)[1]]
+                next_type = TYPES[symbol]
+                if next_type != "enemy" :
+                    joueur.move(move(key, joueur))
+                    ancien_type = TYPES[ancien_symbole]
+                    if ancien_type in ("corridor", "door", "staircase"):
+                        map[ancien_x][ancien_y] = ancien_symbole # On remet le point de départ à sa valeur initiale
+                    else:
+                        map[ancien_x][ancien_y] = "."
+                    map[joueur.coord_x][joueur.coord_y] = "@"
+    else:
+        if key == 'a' :
+            joueur.sac.add_object(Objets.arme_de_base)
+    return sac_ouvert
+
+def print_sac(sac):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    print("Or : ", sac.gold)
+    print("Protection : ", sac.protection)
+    print("Armes : ")
+    i = 0
+    for arme in sac.armes:
+        print(alphabet[i],") ",arme)
+        i += 1
+    print("Armures : ")
+    for armure in sac.armures:
+        print(alphabet[i],") ",armure)
+        i += 1
+    print("Potions : ")
+    for potion in sac.potions:
+        if sac.potions[potion] > 0 :
+            print(alphabet[i],") ",potion, " : ", sac.potions[potion])
+            i += 1
 
 def main():
     map = arena(30,30)
@@ -249,12 +268,13 @@ def main():
         if key.event_type == keyboard.KEY_DOWN :
             key = key.name
 
-        event(key, joueur, map, original_map)
-        
-
+        sac_ouvert = event(key, joueur, map, original_map, sac_ouvert) # On déplace le joueur ou on effectue des actions avec le sac
         
         os.system("cls")
-        print_bg(map)
+        if sac_ouvert :
+            print_sac(sac)
+        else:
+            print_bg(map)
 
 
 main()
