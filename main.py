@@ -195,8 +195,8 @@ def main():
         if event.event_type == keyboard.KEY_DOWN :
             key = event.name
         next_move = move(key, joueur)
-        next_type = TYPES(map[next_move])
-
+        next_type = TYPES(map[next_move])  
+        
         if next_type in ('room', 'door', 'corridor', 'staircase'):
             joueur.move(next_move)
 
