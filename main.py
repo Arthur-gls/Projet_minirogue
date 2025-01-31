@@ -64,6 +64,8 @@ class Joueur ():
         self.coord_y = y
         self.points = 10
         self.sac = sac
+        self.arme_equipee = Objets.arme_de_base
+        self.degats = 1
     def move(self, new_position):
         x, y = new_position
         self.coord_x = x
@@ -74,11 +76,12 @@ class Joueur ():
         self.points -= points
 
 class Enemy ():
-    def __init__(self, x, y, pv, stuff):
+    def __init__(self, x, y, pv, stuff, degats):
         self.coord_x = x
         self.coord_y = y
         self.points = pv
         self.stuff = stuff
+        self.degats = degats
     def hit(self, points, joueur):
         self.points -= points
         if self.points <= 0 :
@@ -213,7 +216,7 @@ def valid_move(key, joueur, map):
     if next_type != "wall" :
         return True
 
-def event(key, joueur, map, original_map):
+def event(key, joueur, map, original_map, Monstres):
     if key == 'space' :
         sac_ouvert = not sac_ouvert
         # A FAIRE: afficher le sac ou la carte
@@ -232,13 +235,22 @@ def event(key, joueur, map, original_map):
                 else:
                     map[ancien_x][ancien_y] = "."
                 map[joueur.coord_x][joueur.coord_y] = "@"
+            else :
+                Monstres[(move(key, joueur))].hit(joueur.degats, joueur)
+
 
 def main():
     map = arena(30,30)
     original_map = copy.deepcopy(map)
+    monstre1 = Enemy(5, 5, 10, [Objets.armure_de_cristal], 0)
+    monstre2 = Enemy(15, 15, 10, [], 0)
+    Monstres = {(15,15) : monstre2, (5,5) : monstre1}
     sac = Sac()
     joueur = Joueur(27, 5, sac)
     map[joueur.coord_x][joueur.coord_y] = "@"
+    for monstre in Monstres :
+        x, y = monstre
+        map[x][y] = 'K'
     sac_ouvert = False
     WAIT = True
     print_bg(map)
@@ -249,7 +261,7 @@ def main():
         if key.event_type == keyboard.KEY_DOWN :
             key = key.name
 
-        event(key, joueur, map, original_map)
+        event(key, joueur, map, original_map, Monstres)
         
 
         
