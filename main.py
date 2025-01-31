@@ -40,8 +40,6 @@ class Joueur ():
         self.coord_x = x
         self.coord_y = y
 
-joueur = Joueur(5,5)
-
 # Données de l'arène
 
 LENGHT = 30
@@ -144,7 +142,7 @@ TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor'
 
 
 
-def move (key):
+def move (key, joueur):
     x, y = joueur.coord_x, joueur.coord_y
     if key == 'left' :
         next_move = x - 1, y
@@ -159,6 +157,7 @@ def move (key):
 
 def main():
     sac = Sac()
+    joueur = Joueur(5,5)
     sac_ouvert = False
     WAIT = True
     while WAIT :
@@ -167,7 +166,7 @@ def main():
         if event.event_type == keyboard.KEY_DOWN :
             key = event.name
             
-        next_move = move(key, position)
+        next_move = move(key, joueur)
         next_type = TYPES(map[next_move])
 
         if next_type in ('room', 'door', 'corridor', 'staircase'):
