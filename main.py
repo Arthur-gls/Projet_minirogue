@@ -3,7 +3,7 @@ import os
 import keyboard
 
 class Objets:
-    arme_de_base = ["arme", "contact",1]
+    arme_de_base = ["arme", "contact",1]
     épée = ["arme", "contact",2]
     hache = ["arme", "contact",3]
     lance = ["arme", "contact",4]
