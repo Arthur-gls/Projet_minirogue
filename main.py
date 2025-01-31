@@ -1,3 +1,4 @@
+import keyboard
 class Objets:
     arme_de_base = ["contact",1]
     épée = ["contact",2]
@@ -100,12 +101,29 @@ def arena(LENGHT, WIDTH):
     return map
 
 
-print(arena(LENGHT, WIDTH))
+#print(arena(LENGHT, WIDTH))
 
 
 
 
-import keyboard
+nested_list = [
+    ['-', '-', '-', '-', '-', '-', '-', '-'],
+    ['|', '1', '2', '3', '4', '5', '6', '|'],
+    ['-', '-', '-', '-', '-', '-', '-', '-']
+]
+
+bg_test2 = ['--------',
+            '|   G  |',
+            '--------']
+
+def print_bg(background):
+    for line in background:
+        s = ''
+        for char in line:
+            s += char
+        print(s)
+
+
 
 TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase', '*' : 'gold',
          'j' : 'potion', "!" : "sword", ")" : "bow"}
