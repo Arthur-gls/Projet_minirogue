@@ -41,6 +41,27 @@ class Joueur ():
         x, y = new_position
         self.coord_x = x
         self.coord_y = y
+    def add_points(self, points):
+        self.points += points
+    def hit(self, points):
+        self.points -= points
+
+class Enemy ():
+    def __init__(self, x, y, pv, stuff):
+        self.coord_x = x
+        self.coord_y = y
+        self.points = pv
+        self.stuff = stuff
+    def hit(self, points):
+        self.points -= points
+        if self.points <= 0 :
+            self.death()
+    def death(self):
+        for objet in stuff :
+            #ajouter au sac
+            pass
+
+
 
 # Données de l'arène
 
@@ -80,10 +101,10 @@ def porte(map, i, j):
 
 def couloir(map, i1, j1, i2, j2, direction):
     if direction == "h":
-        for j in (j1 + 1, j2):
+        for j in range(j1 + 1, j2):
             map[i1][j] = COULOIR
     elif direction == "v":
-        for i in (i1 + 1, i2):
+        for i in range(i1 + 1, i2):
             map[i][j1] = COULOIR
 
     return map
@@ -111,7 +132,10 @@ def arena(LENGHT, WIDTH):
 
 #print(arena(LENGHT, WIDTH))
 
+import random as rd
 
+def random_arena(l,w):
+    pass
 
 
 nested_list = [
