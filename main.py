@@ -1,6 +1,7 @@
 import time
 import os 
 import keyboard
+
 class Objets:
     arme_de_base = ["contact",1]
     épée = ["contact",2]
@@ -171,17 +172,18 @@ TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor'
 def move (key, joueur):
     x, y = joueur.coord_x, joueur.coord_y
     if key == 'left' :
-        next_move = x - 1, y
+        next_position = x - 1, y
     if key == 'right' :
-        next_move = x + 1, y
+        next_position = x + 1, y
     if key == 'up' :
-        next_move = x, y - 1
+        next_position = x, y - 1
     if key == 'down' :
         next_move = x, y - 1
     return(next_move)
 
 
 def main():
+    map = arena(30,30)
     print_bg(arena(LENGHT, WIDTH))
     sac = Sac()
     joueur = Joueur(5,5)
