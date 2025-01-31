@@ -39,6 +39,27 @@ class Joueur ():
         x, y = new_position
         self.coord_x = x
         self.coord_y = y
+    def add_points(self, points):
+        self.points += points
+    def hit(self, points):
+        self.points -= points
+
+class Enemy ():
+    def __init__(self, x, y, pv, stuff):
+        self.coord_x = x
+        self.coord_y = y
+        self.points = pv
+        self.stuff = stuff
+    def hit(self, points):
+        self.points -= points
+        if self.points <= 0 :
+            self.death()
+    def death(self):
+        for objet in stuff :
+            #ajouter au sac
+            pass
+
+
 
 # Données de l'arène
 
