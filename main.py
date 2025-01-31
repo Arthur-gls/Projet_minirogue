@@ -4,6 +4,7 @@ import time
 import time
 import os 
 import keyboard
+import copy
 
 class Objets:
     arme_de_base = ["arme", "contact",1]
@@ -31,9 +32,9 @@ class Objets:
     poison = ['potion', 'poison', -8]
     potion_guerison = ['potion', 'potion_guerison', 10]
 
-def __init__(self,arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau, veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal):
-        self.armes = [arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau]
-        self.armures = [veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal, slip]
+    def __init__(self,arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau, veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal):
+            self.armes = [arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau]
+            self.armures = [veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal, slip]
 
 class Sac(Objets):
     def __init__ (self):
@@ -58,10 +59,11 @@ class Sac(Objets):
         self.gold += gold
 
 class Joueur ():
-    def __init__(self, x, y):
+    def __init__(self, x, y, sac):
         self.coord_x = x
         self.coord_y = y
         self.points = 10
+        self.sac = sac
     def move(self, new_position):
         x, y = new_position
         self.coord_x = x
@@ -77,13 +79,11 @@ class Enemy ():
         self.coord_y = y
         self.points = pv
         self.stuff = stuff
-    def hit(self, points):
+    def hit(self, points, joueur):
         self.points -= points
         if self.points <= 0 :
-            self.death()
-    def death(self):
-        for objet in self.stuff :
-            pass
+            for objet in self.stuff :
+                joueur.sac.add_object(objet)
 
 
 
@@ -189,7 +189,7 @@ def print_bg(background):
 
 
 
-TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase', '*' : 'gold',
+TYPES = {'_' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase', '*' : 'gold',
          'j' : 'potion', "!" : "sword", ")" : "bow", "K" : "enemy"}
 
 
@@ -213,24 +213,31 @@ def valid_move(key, joueur, map):
     if next_type != "wall" :
         return True
 
-def event(key, joueur, map):
+def event(key, joueur, map, original_map):
     if key == 'space' :
         sac_ouvert = not sac_ouvert
         # A FAIRE: afficher le sac ou la carte
     
     if key in ['gauche', 'droite', 'haut', 'bas'] :
-        if valid_move(key, joueur, map) :
+        if valid_move(key, joueur, map):
             ancien_x, ancien_y = joueur.coord_x, joueur.coord_y
-            next_type = TYPES[map[move(key, joueur)[0]][move(key, joueur)[1]]]
+            ancien_symbole = original_map[ancien_x][ancien_y]
+            symbol = map[move(key, joueur)[0]][move(key, joueur)[1]]
+            next_type = TYPES[symbol]
             if next_type != "enemy" :
                 joueur.move(move(key, joueur))
-            map[ancien_x][ancien_y] = "." # On remet le point de départ à sa valeur initiale
-            map[joueur.coord_x][joueur.coord_y] = "@"
+                ancien_type = TYPES[ancien_symbole]
+                if ancien_type in ("corridor", "door", "staircase"):
+                    map[ancien_x][ancien_y] = ancien_symbole # On remet le point de départ à sa valeur initiale
+                else:
+                    map[ancien_x][ancien_y] = "."
+                map[joueur.coord_x][joueur.coord_y] = "@"
 
 def main():
     map = arena(30,30)
+    original_map = copy.deepcopy(map)
     sac = Sac()
-    joueur = Joueur(27,5)
+    joueur = Joueur(27, 5, sac)
     map[joueur.coord_x][joueur.coord_y] = "@"
     sac_ouvert = False
     WAIT = True
@@ -243,7 +250,8 @@ def main():
             key = key.name
             if key== 'q':
                 break
-        event(key, joueur, map)
+
+        event(key, joueur, map, original_map)
         
 
         
