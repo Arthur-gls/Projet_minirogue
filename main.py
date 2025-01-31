@@ -107,7 +107,8 @@ print(arena(LENGHT, WIDTH))
 
 import keyboard
 
-TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase'}
+TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase', '*' : 'gold',
+         'j' : 'potion', "!" : "sword", ")" : "bow"}
 
 
 def get_position(arene):
