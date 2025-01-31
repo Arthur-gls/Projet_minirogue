@@ -108,7 +108,13 @@ def arena(LENGHT, WIDTH):
 
 nested_list = [
     ['-', '-', '-', '-', '-', '-', '-', '-'],
-    ['|', '1', '2', '3', '4', '5', '6', '|'],
+    ['|', '1', '1', '1', '2', '1', '1', '|'],
+    ['-', '-', '-', '-', '-', '-', '-', '-']
+]
+
+nested_list2 = [
+    ['-', '-', '-', '-', '-', '-', '-', '-'],
+    ['|', '1', '1', '1', '1', '2', '1', '|'],
     ['-', '-', '-', '-', '-', '-', '-', '-']
 ]
 
@@ -160,4 +166,16 @@ while WAIT :
     else :
         position = next_move
    
+import time
+import os 
+print_bg(nested_list)
+time.sleep(0.2)
+os.system("cls")
+print_bg(nested_list2)
+time.sleep(0.2)
+os.system("cls")
+print_bg(nested_list)
+time.sleep(0.2)
+os.system("cls")
+print_bg(nested_list2)
 
