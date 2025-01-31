@@ -184,7 +184,7 @@ def move (key, joueur):
 
 def main():
     map = arena(30,30)
-    print_bg(arena(LENGHT, WIDTH))
+    print_bg(map)
     sac = Sac()
     joueur = Joueur(5,5)
     sac_ouvert = False
