@@ -170,13 +170,13 @@ TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor'
 
 def move (key, joueur):
     x, y = joueur.coord_x, joueur.coord_y
-    if key == 'left' :
+    if key in ('left', 'gauche'):
         next_move = x - 1, y
-    if key == 'right' :
+    if key in ('droite', 'right') :
         next_move = x + 1, y
-    if key == 'up' :
+    if key in ('haut', 'up') :
         next_move = x, y - 1
-    if key == 'down' :
+    if key in ('down', 'bas') :
         next_move = x, y - 1
     return(next_move)
 
