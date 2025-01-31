@@ -168,7 +168,59 @@ def arena(LENGHT, WIDTH):
 import random as rd
 
 def random_arena(l,w):
-    pass
+    map=[[" " for i in range(WIDTH)] for j in range(LENGHT)]
+
+    p1=(rd.randint(0,l-9),rd.randint(0,w-9))
+    p2=(rd.randint(p1[0]+2,l-7),rd.randint(p1[1]+2,w-7))
+
+    i1,j1=p1[0],p1[1]
+    i2,j2=p2[0],p2[1]
+
+    map=salle(map,i1,j1,i2,j2)
+
+    rd_direction=rd.randint(0,1)
+    if rd_direction == 0:
+        direction='h'
+    else:
+        direction='v'
+
+    if direction=='h':
+        other_dir='v'
+        pos_door=(i2,rd.randint(j1+1,j2-1))
+        pos_couloir_1=(rd.randint(i2+1,l-3),pos_door[1]+1)
+        pos_couloir_2=(pos_couloir_1[0],rd.randint(pos_couloir_1[1],w-3))
+        pos_door_2=(pos_couloir_2[0],pos_couloir_2[1]+1)
+        if pos_door_2[1]>j2+1:
+            pos_salle1=(rd.randint(0,l-3),pos_door_2[1])
+        else:
+            pos_salle1=(rd.randint(p2[0]+2,l-3),pos_door_2[1])
+        pos_salle2=(rd.randint(max([pos_salle1[0]+2,pos_couloir_2[0]+1]),l-1),rd.randint(pos_salle1[1]+2,w-1))
+    elif direction=='v':
+        other_dir='h'
+        pos_door=(rd.randint(i1+1,i2-1),j2)
+        pos_couloir_1=(pos_door[0]+1,rd.randint(j2+1,w-3))
+        pos_couloir_2=(rd.randint(pos_couloir_1[0],l-3),pos_couloir_1[1])
+        pos_door_2=(pos_couloir_2[0]+1,pos_couloir_2[1])
+        if pos_door_2[0]>i2+1:
+            pos_salle1=(pos_door_2[0],rd.randint(0,w-3))
+        else:
+            pos_salle1=(pos_door_2[0],rd.randint(j2+2,w-3))
+        pos_salle2=(rd.randint(pos_salle1[0]+2,l-1),rd.randint(max([pos_salle1[1]+2,pos_couloir_2[1]+1]),w-1))
+
+    map=porte(map,pos_door[0],pos_door[1])
+    if direction=='h':
+        map=couloir(map,pos_door[0]+1,pos_door[1],pos_couloir_1[0],pos_couloir_1[1],other_dir)
+        map=couloir(map,pos_couloir_1[0],pos_couloir_1[1],pos_couloir_2[0],pos_couloir_2[1],direction)
+    else:
+        map=couloir(map,pos_door[0],pos_door[1]+1,pos_couloir_1[0],pos_couloir_1[1],other_dir)
+        map=couloir(map,pos_couloir_1[0],pos_couloir_1[1],pos_couloir_2[0],pos_couloir_2[1],direction)
+
+    map=salle(map,pos_salle1[0],pos_salle1[1],pos_salle2[0],pos_salle2[1])
+    map=porte(map,pos_door_2[0],pos_door_2[1])
+
+    return map
+
+map_random=(random_arena(30,30))
 
 
 nested_list = [
@@ -194,7 +246,7 @@ def print_bg(background):
             s += char
         print(s)
 
-
+print(print_bg(map_random))
 
 TYPES = {'_' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase', '*' : 'gold',
          'j' : 'potion', "!" : "sword", ")" : "bow", "K" : "enemy"}
