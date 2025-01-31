@@ -52,7 +52,7 @@ class Sac(Objets):
             self.armures.append(object)
             self.protection += object[1]
         if object_type == 'potion' :
-            self.potion[object[1]] += 1
+            self.potions[object[1]] += 1
     def use_potion(self, potion):
         self.potions[potion[1]] -= 1
     def add_gold (self, gold):
@@ -76,7 +76,6 @@ class Joueur ():
         self.points -= points
         if self.points <= 0 :
             WAIT = False
-            print("T'es mort, espèce d'andouille ! Apprends à jouer au lieu de faire de la QSE... Guignol")
 
 class Enemy ():
     def __init__(self, x, y, pv, stuff, degats):
@@ -268,9 +267,10 @@ def valid_move(key, joueur, map):
     if next_type != "wall" :
         return True
 
-def event(key, joueur, map, original_map, Monstres, sac_ouvert):
+def event(key, joueur, map, original_map, Monstres, sac_ouvert, sac):
     if key == 'space' :
         sac_ouvert = not sac_ouvert
+        return sac_ouvert
     
     if not(sac_ouvert) :
         if key in ['gauche', 'droite', 'haut', 'bas'] :
@@ -301,8 +301,31 @@ def event(key, joueur, map, original_map, Monstres, sac_ouvert):
                     if abs(joueur.coord_x - monstre.coord_x) <= 1 or abs(joueur.coord_y - monstre.coord_y) <= 1 :
                         joueur.hit(monstre.degats)
     else:
-        if key == 'a' :
-            joueur.sac.add_object(Objets.arme_de_base)
+        alphabet = "abcdefghijklmnopqrstuvwxyz123456789"
+        i = 0
+        inventaire = {}
+        for arme in sac.armes:
+            inventaire[alphabet[i]] = arme
+            i += 1
+        for armure in sac.armures:
+            inventaire[alphabet[i]] = armure
+            i += 1
+        for potion in sac.potions:
+            if sac.potions[potion] > 0 :
+                inventaire[alphabet[i]] = potion
+                i += 1
+        if key in inventaire:
+            object = inventaire[key]
+            if object[0] == 'arme' :
+                joueur.arme_equipee = object
+                joueur.degats = object[3]
+            if object[0] == 'armure' :
+                joueur.sac.protection -= joueur.sac.armures[object]
+                joueur.sac.armures.remove(object)
+            if object[0] == 'potion' :
+                joueur.add_points(object[2])
+                joueur.sac.use_potion(object)
+    
     return sac_ouvert
 
 def print_sac(sac):
@@ -312,7 +335,7 @@ def print_sac(sac):
     print("Armes : ")
     i = 0
     for arme in sac.armes:
-        print(alphabet[i],") ",arme)
+        print(alphabet[i],") ",arme[1])
         i += 1
     print("Armures : ")
     for armure in sac.armures:
@@ -332,6 +355,7 @@ def main():
     Monstres = {(23,27) : monstre2, (5,5) : monstre1}
     sac = Sac()
     joueur = Joueur(27, 5, sac)
+    sac.add_object(Objets.bouteille_eau)
     map[joueur.coord_x][joueur.coord_y] = "@"
     for monstre in Monstres :
         x, y = monstre
@@ -348,7 +372,7 @@ def main():
         if key == "q":
             break
 
-        sac_ouvert = event(key, joueur, map, original_map, Monstres, sac_ouvert)
+        sac_ouvert = event(key, joueur, map, original_map, Monstres, sac_ouvert, sac)
         
 
         
@@ -357,6 +381,7 @@ def main():
             print_sac(sac)
         else:
             print_bg(map)
+    print("Tu es mort, espèce d'andouille ! Apprends à jouer au lieu de faire de la QSE... Guignol")
 
 
 main()
