@@ -1,3 +1,5 @@
+import time
+import os 
 import keyboard
 
 class Objets:
@@ -182,6 +184,7 @@ def move (key, joueur):
 
 def main():
     map = arena(30,30)
+    print_bg(arena(LENGHT, WIDTH))
     sac = Sac()
     joueur = Joueur(5,5)
     sac_ouvert = False
@@ -198,19 +201,10 @@ def main():
         if next_type in ('room', 'door', 'corridor', 'staircase'):
             joueur.move(next_move)
 
-        
-   
-import time
-import os 
-print_bg(nested_list)
-time.sleep(0.2)
-os.system("cls")
-print_bg(nested_list2)
-time.sleep(0.2)
-os.system("cls")
-print_bg(nested_list)
-time.sleep(0.2)
-os.system("cls")
-print_bg(nested_list2)
+        else :
+            position = next_move
+        os.system("cls")
+        print_bg(nested_list)
+
 
 main()
