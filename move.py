@@ -21,22 +21,22 @@ def move (key, position):
 WAIT = True
 
 while WAIT :
-    if keyboard.key_pressed('up') or keyboard.key_pressed('down') or keyboard.key_pressed('right') or keyboard.key_pressed('left'):
+    # Wait for the next event.
+    event = keyboard.read_event()
+    if event.event_type == keyboard.KEY_DOWN :
+        key = event.name
+        
+    next_move = move(key, position)
+    next_type = TYPES(map[next_move])
 
+    if next_type in ('room', 'door', 'corridor', 'staircase'):
+        position = next_move
 
-        key = keyboard.read_key()
-        next_move = move(key, position)
-        next_type = TYPES(map[next_move])
+    else :
+        position = next_move
+    
+    
 
-        if next_type == 'wall' :
-            print_map()
-
-        if next_type in ('room', 'door', 'corridor') :
-            position = next_move
-            print_map()
-
-        if next_type == 'staircase' :
-            position = next_move
-            print_map()
+    mise_a_jour(arene)
 
 

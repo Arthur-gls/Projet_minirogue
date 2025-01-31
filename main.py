@@ -1,3 +1,39 @@
+import keyboard
+class Objets:
+    arme_de_base = ["contact",1]
+    épée = ["contact",2]
+    hache = ["contact",3]
+    lance = ["contact",4]
+    baton = ["contact",1]
+    dague = ["contact",6]
+    arc = ["distance",2]
+    arbalète = ["distance",3]
+    fronde = ["distance",1]
+    marteau = ["contact",5]
+
+    veste_en_cuir = [3]
+    gilet_jaune = [30]
+    armure_en_or = [10]
+    armure_de_bois = [5]
+    armure_de_fer = [7]
+    armure_de_diamant = [15]
+    armure_de_cristal = [20]
+
+    def __init__(self,arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau, veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal):
+        self.armes = [arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau]
+        self.armures = [veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal]
+
+class Sac(Objets):
+    def __init__ (self):
+        self.compteur_or = 0
+        self.armes = [Objets.arme_de_base]
+        self.armures = []
+        self.potions = []
+
+
+sac = Sac()
+print(sac.armes)
+
 # Données de l'arène
 
 LENGHT = 30
@@ -87,4 +123,41 @@ def print_bg(background):
             s += char
         print(s)
 
-print_bg(arena(LENGHT, WIDTH))
+
+
+TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase'}
+
+
+def get_position(arene):
+    return position
+
+def move (key, position):
+    x, y = position
+    if key == 'left' :
+        next_move = x - 1, y
+    if key == 'right' :
+        next_move = x + 1, y
+    if key == 'up' :
+        next_move = x, y - 1
+    if key == 'down' :
+        next_move = x, y - 1
+    return next_move
+
+WAIT = True
+
+while WAIT :
+    # Wait for the next event.
+    event = keyboard.read_event()
+    if event.event_type == keyboard.KEY_DOWN :
+        key = event.name
+        
+    next_move = move(key, position)
+    next_type = TYPES(map[next_move])
+
+    if next_type in ('room', 'door', 'corridor', 'staircase'):
+        position = next_move
+
+    else :
+        position = next_move
+   
+
