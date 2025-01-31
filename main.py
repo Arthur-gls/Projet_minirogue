@@ -192,7 +192,6 @@ def main():
         event = keyboard.read_event()
         if event.event_type == keyboard.KEY_DOWN :
             key = event.name
-            
         next_move = move(key, joueur)
         next_type = TYPES(map[next_move])
 
