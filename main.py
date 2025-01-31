@@ -30,6 +30,17 @@ class Sac(Objets):
         self.armures = []
         self.potions = []
 
+class Joueur ():
+    def __init__(self, x, y):
+        self.coord_x = x
+        self.coord_y = y
+        self.points = 10
+    def move(self, new_position):
+        x, y = new_position
+        self.coord_x = x
+        self.coord_y = y
+
+joueur = Joueur(5,5)
 
 # Données de l'arène
 
@@ -126,11 +137,9 @@ TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor'
          'j' : 'potion', "!" : "sword", ")" : "bow"}
 
 
-def get_position(arene):
-    return position
 
-def move (key, position):
-    x, y = position
+def move (key):
+    x, y = joueur.coord_x, joueur.coord_y
     if key == 'left' :
         next_move = x - 1, y
     if key == 'right' :
@@ -139,7 +148,7 @@ def move (key, position):
         next_move = x, y - 1
     if key == 'down' :
         next_move = x, y - 1
-    return next_move
+    return(next_move)
 
 
 def main():
@@ -156,10 +165,9 @@ def main():
         next_type = TYPES(map[next_move])
 
         if next_type in ('room', 'door', 'corridor', 'staircase'):
-            position = next_move
+            joueur.move(next_move)
 
-        else :
-            position = next_move
+        
    
 
 main()
