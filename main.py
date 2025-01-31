@@ -173,26 +173,22 @@ def move (key, joueur):
     x,y = joueur.coord_x, joueur.coord_y
     next_position = x,y
     if key == 'gauche' :
-        next_position = x - 1, y
+        next_position = x, y - 1
     if key == 'droite' :
-        next_position = x + 1, y
+        next_position = x, y + 1
     if key == 'haut' :
-        next_position = x, y - 1
+        next_position = x - 1, y
     if key == 'bas' :
-        next_position = x, y - 1
+        next_position = x + 1, y
     return(next_position)
 
 def valid_move(key, joueur, map):
     next_move = move(key, joueur)
-    print(next_move)
-    print(map[next_move[0]][next_move[1]])
     next_type = TYPES[map[next_move[0]][next_move[1]]]
     if next_type != "wall" :
         return True
 
 def event(key, joueur, map):
-    #print(key)
-    print("a")
     if key == 'space' :
         sac_ouvert = not sac_ouvert
         # A FAIRE: afficher le sac ou la carte
@@ -205,7 +201,6 @@ def event(key, joueur, map):
                 joueur.move(move(key, joueur))
             map[ancien_x][ancien_y] = "." # On remet le point de départ à sa valeur initiale
             map[joueur.coord_x][joueur.coord_y] = "@"
-
 
 def main():
     map = arena(30,30)
