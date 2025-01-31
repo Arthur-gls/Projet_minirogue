@@ -1,6 +1,7 @@
 import time
 import os 
 import keyboard
+
 class Objets:
     arme_de_base = ["contact",1]
     épée = ["contact",2]
@@ -180,7 +181,9 @@ def move (key, joueur):
         next_move = x, y - 1
     return(next_move)
 
+
 def main():
+    map = arena(30,30)
     print_bg(arena(LENGHT, WIDTH))
     sac = Sac()
     joueur = Joueur(5,5)
