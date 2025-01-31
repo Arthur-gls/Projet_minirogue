@@ -181,8 +181,8 @@ def move (key, joueur):
 
 
 def main():
+    map = arena(30,30)
     sac = Sac()
-    joueur = Joueur(5,5)
     joueur = Joueur(5,5)
     sac_ouvert = False
     WAIT = True
