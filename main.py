@@ -8,16 +8,16 @@ import copy
 WAIT = True
 
 class Objets:
-    arme_de_base = ["arme", "contact",1]
-    épée = ["arme", "contact",2]
-    hache = ["arme", "contact",3]
-    lance = ["arme", "contact",4]
-    baton = ["arme", "contact",1]
-    dague = ["arme", "contact",6]
-    arc = ["arme", "distance",2]
-    arbalète = ["arme", "distance",3]
-    fronde = ['arme', "distance",1]
-    marteau = ['arme', "contact",5]
+    arme_de_base = ["arme", "arme_de_base", "contact",1]
+    épée = ["arme", "épée", "contact",2]
+    hache = ["arme", "hache", "contact",3]
+    lance = ["arme", "lance", "contact",4]
+    baton = ["arme", "baton", "contact",1]
+    dague = ["arme", "dague", "contact",6]
+    arc = ["arme", "arc", "distance",2]
+    arbalète = ["arme", "arbalète", "distance",3]
+    fronde = ['arme', "fronde", "distance",1]
+    marteau = ['arme', "marteau", "contact",5]
 
     veste_en_cuir = ["armure", 3]
     gilet_jaune = ["armure", 30]
@@ -287,13 +287,26 @@ def event(key, joueur, map, original_map, Monstres, sac_ouvert):
                     else:
                         map[ancien_x][ancien_y] = "."
                     map[joueur.coord_x][joueur.coord_y] = "@"
+                
+                else:
+                    monstre = Monstres[(move(key,joueur))]
+                    monstre.hit(joueur.degats, joueur)
+                    if monstre.points <= 0 :
+                        map[monstre.coord_x][monstre.coord_y] = '.'
+                        for objet in monstre.stuff :
+                            joueur.sac.add_object(objet)
+                            print(joueur.sac)
+
+                for monstre in Monstres.values() :
+                    if abs(joueur.coord_x - monstre.coord_x) <= 1 or abs(joueur.coord_y - monstre.coord_y) <= 1 :
+                        joueur.hit(monstre.degats)
     else:
         if key == 'a' :
             joueur.sac.add_object(Objets.arme_de_base)
     return sac_ouvert
 
 def print_sac(sac):
-    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    alphabet = "abcdefghijklmnopqrstuvwxyz123456789"
     print("Or : ", sac.gold)
     print("Protection : ", sac.protection)
     print("Armes : ")
@@ -331,8 +344,11 @@ def main():
         key = keyboard.read_event()
         if key.event_type == keyboard.KEY_DOWN :
             key = key.name
+        
+        if key == "q":
+            break
 
-        event(key, joueur, map, original_map)
+        sac_ouvert = event(key, joueur, map, original_map, Monstres, sac_ouvert)
         
 
         
