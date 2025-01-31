@@ -1,6 +1,7 @@
 import time
 import os 
 import keyboard
+import copy
 
 class Objets:
     arme_de_base = ["contact",1]
@@ -164,7 +165,7 @@ def print_bg(background):
 
 
 
-TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase', '*' : 'gold',
+TYPES = {'_' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase', '*' : 'gold',
          'j' : 'potion', "!" : "sword", ")" : "bow", "K" : "enemy"}
 
 
@@ -188,22 +189,29 @@ def valid_move(key, joueur, map):
     if next_type != "wall" :
         return True
 
-def event(key, joueur, map):
+def event(key, joueur, map, original_map):
     if key == 'space' :
         sac_ouvert = not sac_ouvert
         # A FAIRE: afficher le sac ou la carte
     
     if key in ['gauche', 'droite', 'haut', 'bas'] :
-        if valid_move(key, joueur, map) :
+        if valid_move(key, joueur, map):
             ancien_x, ancien_y = joueur.coord_x, joueur.coord_y
-            next_type = TYPES[map[move(key, joueur)[0]][move(key, joueur)[1]]]
+            ancien_symbole = original_map[ancien_x][ancien_y]
+            symbol = map[move(key, joueur)[0]][move(key, joueur)[1]]
+            next_type = TYPES[symbol]
             if next_type != "enemy" :
                 joueur.move(move(key, joueur))
-            map[ancien_x][ancien_y] = "." # On remet le point de départ à sa valeur initiale
-            map[joueur.coord_x][joueur.coord_y] = "@"
+                ancien_type = TYPES[ancien_symbole]
+                if ancien_type in ("corridor", "door", "staircase"):
+                    map[ancien_x][ancien_y] = ancien_symbole # On remet le point de départ à sa valeur initiale
+                else:
+                    map[ancien_x][ancien_y] = "."
+                map[joueur.coord_x][joueur.coord_y] = "@"
 
 def main():
     map = arena(30,30)
+    original_map = copy.deepcopy(map)
     sac = Sac()
     joueur = Joueur(27,5)
     map[joueur.coord_x][joueur.coord_y] = "@"
@@ -217,7 +225,7 @@ def main():
         if key.event_type == keyboard.KEY_DOWN :
             key = key.name
 
-        event(key, joueur, map)
+        event(key, joueur, map, original_map)
         
 
         
