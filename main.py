@@ -1,3 +1,5 @@
+import time
+import os 
 import keyboard
 class Objets:
     arme_de_base = ["contact",1]
@@ -149,6 +151,7 @@ def move (key, position):
 
 
 def main():
+    print_bg(arena(LENGHT, WIDTH))
     sac = Sac()
     sac_ouvert = False
     WAIT = True
@@ -166,18 +169,8 @@ def main():
 
         else :
             position = next_move
-   
-import time
-import os 
-print_bg(nested_list)
-time.sleep(0.2)
-os.system("cls")
-print_bg(nested_list2)
-time.sleep(0.2)
-os.system("cls")
-print_bg(nested_list)
-time.sleep(0.2)
-os.system("cls")
-print_bg(nested_list2)
+        os.system("cls")
+        print_bg(nested_list)
+
 
 main()
