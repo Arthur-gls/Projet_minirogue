@@ -99,10 +99,10 @@ def porte(map, i, j):
 
 def couloir(map, i1, j1, i2, j2, direction):
     if direction == "h":
-        for j in (j1 + 1, j2):
+        for j in range(j1 + 1, j2):
             map[i1][j] = COULOIR
     elif direction == "v":
-        for i in (i1 + 1, i2):
+        for i in range(i1 + 1, i2):
             map[i][j1] = COULOIR
 
     return map
@@ -130,7 +130,10 @@ def arena(LENGHT, WIDTH):
 
 #print(arena(LENGHT, WIDTH))
 
+import random as rd
 
+def random_arena(l,w):
+    pass
 
 
 nested_list = [
