@@ -165,44 +165,68 @@ def print_bg(background):
 
 
 TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase', '*' : 'gold',
-         'j' : 'potion', "!" : "sword", ")" : "bow"}
+         'j' : 'potion', "!" : "sword", ")" : "bow", "K" : "enemy"}
 
 
 
 def move (key, joueur):
-    x, y = joueur.coord_x, joueur.coord_y
-    if key == 'left' :
+    x,y = joueur.coord_x, joueur.coord_y
+    next_position = x,y
+    if key == 'gauche' :
         next_position = x - 1, y
-    if key == 'right' :
+    if key == 'droite' :
         next_position = x + 1, y
-    if key == 'up' :
+    if key == 'haut' :
         next_position = x, y - 1
-    if key == 'down' :
-        next_move = x, y - 1
-    return(next_move)
+    if key == 'bas' :
+        next_position = x, y - 1
+    return(next_position)
+
+def valid_move(key, joueur, map):
+    next_move = move(key, joueur)
+    print(next_move)
+    print(map[next_move[0]][next_move[1]])
+    next_type = TYPES[map[next_move[0]][next_move[1]]]
+    if next_type != "wall" :
+        return True
+
+def event(key, joueur, map):
+    #print(key)
+    print("a")
+    if key == 'space' :
+        sac_ouvert = not sac_ouvert
+        # A FAIRE: afficher le sac ou la carte
+    
+    if key in ['gauche', 'droite', 'haut', 'bas'] :
+        if valid_move(key, joueur, map) :
+            ancien_x, ancien_y = joueur.coord_x, joueur.coord_y
+            next_type = TYPES[map[move(key, joueur)[0]][move(key, joueur)[1]]]
+            if next_type != "enemy" :
+                joueur.move(move(key, joueur))
+            map[ancien_x][ancien_y] = "." # On remet le point de départ à sa valeur initiale
+            map[joueur.coord_x][joueur.coord_y] = "@"
 
 def main():
     map = arena(30,30)
-    print_bg(arena(LENGHT, WIDTH))
     sac = Sac()
-    joueur = Joueur(5,5)
+    joueur = Joueur(27,5)
+    map[joueur.coord_x][joueur.coord_y] = "@"
     sac_ouvert = False
     WAIT = True
+    print_bg(map)
+
     while WAIT :
         # Wait for the next event.
-        event = keyboard.read_event()
-        if event.event_type == keyboard.KEY_DOWN :
-            key = event.name
-        next_move = move(key, joueur)
-        next_type = TYPES(map[next_move])
+        key = keyboard.read_event()
+        if key.event_type == keyboard.KEY_DOWN :
+            key = key.name
 
-        if next_type in ('room', 'door', 'corridor', 'staircase'):
-            joueur.move(next_move)
+        event(key, joueur, map)
+        
 
-        else :
-            position = next_move
+        
         os.system("cls")
-        print_bg(nested_list)
+        print_bg(map)
 
 
 main()
