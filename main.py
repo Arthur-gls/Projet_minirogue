@@ -3,64 +3,87 @@ import os
 import keyboard
 
 class Objets:
-    arme_de_base = ["contact",1]
-    épée = ["contact",2]
-    hache = ["contact",3]
-    lance = ["contact",4]
-    baton = ["contact",1]
-    dague = ["contact",6]
-    arc = ["distance",2]
-    arbalète = ["distance",3]
-    fronde = ["distance",1]
-    marteau = ["contact",5]
+    arme_de_base = ["arme", "contact",1]
+    épée = ["arme", "contact",2]
+    hache = ["arme", "contact",3]
+    lance = ["arme", "contact",4]
+    baton = ["arme", "contact",1]
+    dague = ["arme", "contact",6]
+    arc = ["arme", "distance",2]
+    arbalète = ["arme", "distance",3]
+    fronde = ['arme', "distance",1]
+    marteau = ['arme', "contact",5]
 
-    veste_en_cuir = [3]
-    gilet_jaune = [30]
-    armure_en_or = [10]
-    armure_de_bois = [5]
-    armure_de_fer = [7]
-    armure_de_diamant = [15]
-    armure_de_cristal = [20]
+    veste_en_cuir = ["armure", 3]
+    gilet_jaune = ["armure", 30]
+    armure_en_or = ["armure", 10]
+    armure_de_bois = ["armure", 5]
+    armure_de_fer = ["armure", 7]
+    armure_de_diamant = ["armure", 15]
+    armure_de_cristal = ["armure", 20]
+    slip = ["armure", 0]
 
-    def __init__(self,arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau, veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal):
-        self.armes = [arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau]
-        self.armures = [veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal]
+    bouteille_eau = ['potion', 'bouteille_eau', 1]
+    bouteille_whisky = ['potion', 'bouteille_whisky', 2]
+    poison = ['potion', 'poison', -8]
+    potion_guerison = ['potion', 'potion_guerison', 10]
+
+    def __init__(self,arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau, veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal):
+        self.armes = [arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau]
+        self.armures = [veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal, slip]
 
 class Sac(Objets):
-    def __init__ (self):
-        self.compteur_or = 0
-        self.armes = [Objets.arme_de_base]
-        self.armures = []
-        self.potions = []
+    def __init__ (self):
+        self.compteur_or = 0
+        self.armes = [Objets.arme_de_base]
+        self.armures = []
+        self.potions = {'bouteille_eau' : 0, 'bouteille_whisky' : 0, 'poison' : 0, 'potion_guerison' : 0}
+        self.gold = 5
+        self.protection = 0
+    def add_object(self, object):
+        object_type = object[0]
+        if object_type == 'arme' : 
+            self.armes.append(object)
+        if object_type == 'armure' :
+            self.armures.append(object)
+            self.protection += object[1]
+        if object_type == 'potion' :
+            self.potion[object[1]] += 1
+    def use_potion(self, potion):
+        self.potions[potion[1]] -= 1
+    def add_gold (self, gold):
+        self.gold += gold
 
 class Joueur ():
-    def __init__(self, x, y):
-        self.coord_x = x
-        self.coord_y = y
-        self.points = 10
-    def move(self, new_position):
-        x, y = new_position
-        self.coord_x = x
-        self.coord_y = y
-    def add_points(self, points):
-        self.points += points
-    def hit(self, points):
-        self.points -= points
+    def __init__(self, x, y):
+        self.coord_x = x
+        self.coord_y = y
+        self.points = 10
+    def move(self, new_position):
+        x, y = new_position
+        self.coord_x = x
+        self.coord_y = y
+    def add_points(self, points):
+        self.points += points
+    def hit(self, points):
+        self.points -= points
 
 class Enemy ():
-    def __init__(self, x, y, pv, stuff):
-        self.coord_x = x
-        self.coord_y = y
-        self.points = pv
-        self.stuff = stuff
-    def hit(self, points):
-        self.points -= points
-        if self.points <= 0 :
-            self.death()
-    def death(self):
-        for objet in stuff :
-            #ajouter au sac
-            pass
+    def __init__(self, x, y, pv, stuff):
+        self.coord_x = x
+        self.coord_y = y
+        self.points = pv
+        self.stuff = stuff
+    def hit(self, points):
+        self.points -= points
+        if self.points <= 0 :
+            self.death()
+    def death(self):
+        for objet in self.stuff :
+            #ajouter au sac
+            pass
+
+
 
 
 
