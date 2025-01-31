@@ -241,7 +241,8 @@ def main():
         key = keyboard.read_event()
         if key.event_type == keyboard.KEY_DOWN :
             key = key.name
-
+            if key== 'q':
+                break
         event(key, joueur, map)
         
 
