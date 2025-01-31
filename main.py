@@ -5,6 +5,8 @@ import os
 import keyboard
 import copy
 
+WAIT = True
+
 class Objets:
     arme_de_base = ["arme", "contact",1]
     épée = ["arme", "contact",2]
@@ -62,6 +64,8 @@ class Joueur ():
         self.coord_y = y
         self.points = 10
         self.sac = sac
+        self.arme_equipee = Objets.arme_de_base
+        self.degats = 1
     def move(self, new_position):
         x, y = new_position
         self.coord_x = x
@@ -70,18 +74,21 @@ class Joueur ():
         self.points += points
     def hit(self, points):
         self.points -= points
+        if self.points <= 0 :
+            WAIT = False
+            print("T'es mort, espèce d'andouille ! Apprends à jouer au lieu de faire de la QSE... Guignol")
 
 class Enemy ():
-    def __init__(self, x, y, pv, stuff):
+    def __init__(self, x, y, pv, stuff, degats):
         self.coord_x = x
         self.coord_y = y
         self.points = pv
         self.stuff = stuff
+        self.degats = degats
     def hit(self, points, joueur):
         self.points -= points
-        if self.points <= 0 :
-            for objet in self.stuff :
-                joueur.sac.add_object(objet)
+        print(self.points)
+        
 
 
 
@@ -157,7 +164,59 @@ def arena(LENGHT, WIDTH):
 #print(arena(LENGHT, WIDTH))
 
 def random_arena(l,w):
-    pass
+    map=[[" " for i in range(WIDTH)] for j in range(LENGHT)]
+
+    p1=(rd.randint(0,l-9),rd.randint(0,w-9))
+    p2=(rd.randint(p1[0]+2,l-7),rd.randint(p1[1]+2,w-7))
+
+    i1,j1=p1[0],p1[1]
+    i2,j2=p2[0],p2[1]
+
+    map=salle(map,i1,j1,i2,j2)
+
+    rd_direction=rd.randint(0,1)
+    if rd_direction == 0:
+        direction='h'
+    else:
+        direction='v'
+
+    if direction=='h':
+        other_dir='v'
+        pos_door=(i2,rd.randint(j1+1,j2-1))
+        pos_couloir_1=(rd.randint(i2+1,l-3),pos_door[1]+1)
+        pos_couloir_2=(pos_couloir_1[0],rd.randint(pos_couloir_1[1],w-3))
+        pos_door_2=(pos_couloir_2[0],pos_couloir_2[1]+1)
+        if pos_door_2[1]>j2+1:
+            pos_salle1=(rd.randint(0,l-3),pos_door_2[1])
+        else:
+            pos_salle1=(rd.randint(p2[0]+2,l-3),pos_door_2[1])
+        pos_salle2=(rd.randint(max([pos_salle1[0]+2,pos_couloir_2[0]+1]),l-1),rd.randint(pos_salle1[1]+2,w-1))
+    elif direction=='v':
+        other_dir='h'
+        pos_door=(rd.randint(i1+1,i2-1),j2)
+        pos_couloir_1=(pos_door[0]+1,rd.randint(j2+1,w-3))
+        pos_couloir_2=(rd.randint(pos_couloir_1[0],l-3),pos_couloir_1[1])
+        pos_door_2=(pos_couloir_2[0]+1,pos_couloir_2[1])
+        if pos_door_2[0]>i2+1:
+            pos_salle1=(pos_door_2[0],rd.randint(0,w-3))
+        else:
+            pos_salle1=(pos_door_2[0],rd.randint(j2+2,w-3))
+        pos_salle2=(rd.randint(pos_salle1[0]+2,l-1),rd.randint(max([pos_salle1[1]+2,pos_couloir_2[1]+1]),w-1))
+
+    map=porte(map,pos_door[0],pos_door[1])
+    if direction=='h':
+        map=couloir(map,pos_door[0]+1,pos_door[1],pos_couloir_1[0],pos_couloir_1[1],other_dir)
+        map=couloir(map,pos_couloir_1[0],pos_couloir_1[1],pos_couloir_2[0],pos_couloir_2[1],direction)
+    else:
+        map=couloir(map,pos_door[0],pos_door[1]+1,pos_couloir_1[0],pos_couloir_1[1],other_dir)
+        map=couloir(map,pos_couloir_1[0],pos_couloir_1[1],pos_couloir_2[0],pos_couloir_2[1],direction)
+
+    map=salle(map,pos_salle1[0],pos_salle1[1],pos_salle2[0],pos_salle2[1])
+    map=porte(map,pos_door_2[0],pos_door_2[1])
+
+    return map
+
+map_random=(random_arena(30,30))
 
 
 nested_list = [
@@ -183,7 +242,7 @@ def print_bg(background):
             s += char
         print(s)
 
-
+print(print_bg(map_random))
 
 TYPES = {'_' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase', '*' : 'gold',
          'j' : 'potion', "!" : "sword", ")" : "bow", "K" : "enemy"}
@@ -209,7 +268,7 @@ def valid_move(key, joueur, map):
     if next_type != "wall" :
         return True
 
-def event(key, joueur, map, original_map, sac_ouvert):
+def event(key, joueur, map, original_map, Monstres, sac_ouvert):
     if key == 'space' :
         sac_ouvert = not sac_ouvert
     
@@ -255,11 +314,16 @@ def print_sac(sac):
 def main():
     map = arena(30,30)
     original_map = copy.deepcopy(map)
+    monstre1 = Enemy(5, 5, 10, [Objets.armure_de_cristal], 0)
+    monstre2 = Enemy(23, 27, 10, [], 0)
+    Monstres = {(23,27) : monstre2, (5,5) : monstre1}
     sac = Sac()
     joueur = Joueur(27, 5, sac)
     map[joueur.coord_x][joueur.coord_y] = "@"
+    for monstre in Monstres :
+        x, y = monstre
+        map[x][y] = 'K'
     sac_ouvert = False
-    WAIT = True
     print_bg(map)
 
     while WAIT :
@@ -268,7 +332,9 @@ def main():
         if key.event_type == keyboard.KEY_DOWN :
             key = key.name
 
-        sac_ouvert = event(key, joueur, map, original_map, sac_ouvert) # On déplace le joueur ou on effectue des actions avec le sac
+        event(key, joueur, map, original_map)
+        
+
         
         os.system("cls")
         if sac_ouvert :
