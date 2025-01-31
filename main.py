@@ -6,6 +6,8 @@ import os
 import keyboard
 import copy
 
+WAIT = True
+
 class Objets:
     arme_de_base = ["arme", "contact",1]
     épée = ["arme", "contact",2]
@@ -74,6 +76,9 @@ class Joueur ():
         self.points += points
     def hit(self, points):
         self.points -= points
+        if self.points <= 0 :
+            WAIT = False
+            print("T'es mort, espèce d'andouille ! Apprends à jouer au lieu de faire de la QSE... Guignol")
 
 class Enemy ():
     def __init__(self, x, y, pv, stuff, degats):
@@ -84,9 +89,8 @@ class Enemy ():
         self.degats = degats
     def hit(self, points, joueur):
         self.points -= points
-        if self.points <= 0 :
-            for objet in self.stuff :
-                joueur.sac.add_object(objet)
+        print(self.points)
+        
 
 
 
@@ -236,15 +240,24 @@ def event(key, joueur, map, original_map, Monstres):
                     map[ancien_x][ancien_y] = "."
                 map[joueur.coord_x][joueur.coord_y] = "@"
             else :
-                Monstres[(move(key, joueur))].hit(joueur.degats, joueur)
+                monstre = Monstres[(move(key,joueur))]
+                monstre.hit(joueur.degats, joueur)
+                if monstre.points <= 0 :
+                    map[monstre.coord_x][monstre.coord_y] = '.'
+                    for objet in monstre.stuff :
+                        joueur.sac.add_object(objet)
+                        print(joueur.sac)
 
+            for monstre in Monstres.values() :
+                if abs(joueur.coord_x - monstre.coord_x) <= 1 or abs(joueur.coord_y - monstre.coord_y) <= 1 :
+                    joueur.hit(monstre.degats)
 
 def main():
     map = arena(30,30)
     original_map = copy.deepcopy(map)
     monstre1 = Enemy(5, 5, 10, [Objets.armure_de_cristal], 0)
-    monstre2 = Enemy(15, 15, 10, [], 0)
-    Monstres = {(15,15) : monstre2, (5,5) : monstre1}
+    monstre2 = Enemy(23, 27, 10, [], 0)
+    Monstres = {(23,27) : monstre2, (5,5) : monstre1}
     sac = Sac()
     joueur = Joueur(27, 5, sac)
     map[joueur.coord_x][joueur.coord_y] = "@"
@@ -252,7 +265,6 @@ def main():
         x, y = monstre
         map[x][y] = 'K'
     sac_ouvert = False
-    WAIT = True
     print_bg(map)
 
     while WAIT :
