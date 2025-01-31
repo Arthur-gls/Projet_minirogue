@@ -31,9 +31,6 @@ class Sac(Objets):
         self.potions = []
 
 
-sac = Sac()
-print(sac.armes)
-
 # Données de l'arène
 
 LENGHT = 30
@@ -131,7 +128,8 @@ def print_bg(background):
 
 
 
-TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase'}
+TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor', '+' : 'door', '=' : 'staircase', '*' : 'gold',
+         'j' : 'potion', "!" : "sword", ")" : "bow"}
 
 
 def get_position(arene):
@@ -149,22 +147,25 @@ def move (key, position):
         next_move = x, y - 1
     return next_move
 
-WAIT = True
 
-while WAIT :
-    # Wait for the next event.
-    event = keyboard.read_event()
-    if event.event_type == keyboard.KEY_DOWN :
-        key = event.name
-        
-    next_move = move(key, position)
-    next_type = TYPES(map[next_move])
+def main():
+    sac = Sac()
+    sac_ouvert = False
+    WAIT = True
+    while WAIT :
+        # Wait for the next event.
+        event = keyboard.read_event()
+        if event.event_type == keyboard.KEY_DOWN :
+            key = event.name
+            
+        next_move = move(key, position)
+        next_type = TYPES(map[next_move])
 
-    if next_type in ('room', 'door', 'corridor', 'staircase'):
-        position = next_move
+        if next_type in ('room', 'door', 'corridor', 'staircase'):
+            position = next_move
 
-    else :
-        position = next_move
+        else :
+            position = next_move
    
 import time
 import os 
@@ -179,3 +180,4 @@ time.sleep(0.2)
 os.system("cls")
 print_bg(nested_list2)
 
+main()
