@@ -180,7 +180,6 @@ def move (key, joueur):
         next_move = x, y - 1
     return(next_move)
 
-
 def main():
     print_bg(arena(LENGHT, WIDTH))
     sac = Sac()
