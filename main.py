@@ -187,9 +187,9 @@ def random_arena(l,w):
         pos_couloir_2=(pos_couloir_1[0],rd.randint(pos_couloir_1[1],w-3))
         pos_door_2=(pos_couloir_2[0],pos_couloir_2[1]+1)
         if pos_door_2[1]>j2+1:
-            pos_salle1=(rd.randint(0,l-3),pos_door_2[1])
+            pos_salle1=(rd.randint(0,pos_couloir_2[0]-1),pos_door_2[1])
         else:
-            pos_salle1=(rd.randint(p2[0]+2,l-3),pos_door_2[1])
+            pos_salle1=(rd.randint(i2+1,pos_couloir_2[0]-1),pos_door_2[1])
         pos_salle2=(rd.randint(max([pos_salle1[0]+2,pos_couloir_2[0]+1]),l-1),rd.randint(pos_salle1[1]+2,w-1))
     elif direction=='v':
         other_dir='h'
@@ -198,9 +198,9 @@ def random_arena(l,w):
         pos_couloir_2=(rd.randint(pos_couloir_1[0],l-3),pos_couloir_1[1])
         pos_door_2=(pos_couloir_2[0]+1,pos_couloir_2[1])
         if pos_door_2[0]>i2+1:
-            pos_salle1=(pos_door_2[0],rd.randint(0,w-3))
+            pos_salle1=(pos_door_2[0],rd.randint(0,pos_couloir_2[1]-1))
         else:
-            pos_salle1=(pos_door_2[0],rd.randint(j2+2,w-3))
+            pos_salle1=(pos_door_2[0],rd.randint(j2+1,pos_couloir_2[1]-1))
         pos_salle2=(rd.randint(pos_salle1[0]+2,l-1),rd.randint(max([pos_salle1[1]+2,pos_couloir_2[1]+1]),w-1))
 
     map=porte(map,pos_door[0],pos_door[1])
