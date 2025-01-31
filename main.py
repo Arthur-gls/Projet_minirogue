@@ -3,34 +3,34 @@ import os
 import keyboard
 
 class Objets:
-arme_de_base = ["arme", "contact",1]
-épée = ["arme", "contact",2]
-hache = ["arme", "contact",3]
-lance = ["arme", "contact",4]
-baton = ["arme", "contact",1]
-dague = ["arme", "contact",6]
-arc = ["arme", "distance",2]
-arbalète = ["arme", "distance",3]
-fronde = ['arme', "distance",1]
-marteau = ['arme', "contact",5]
+    arme_de_base = ["arme", "contact",1]
+    épée = ["arme", "contact",2]
+    hache = ["arme", "contact",3]
+    lance = ["arme", "contact",4]
+    baton = ["arme", "contact",1]
+    dague = ["arme", "contact",6]
+    arc = ["arme", "distance",2]
+    arbalète = ["arme", "distance",3]
+    fronde = ['arme', "distance",1]
+    marteau = ['arme', "contact",5]
 
-veste_en_cuir = ["armure", 3]
-gilet_jaune = ["armure", 30]
-armure_en_or = ["armure", 10]
-armure_de_bois = ["armure", 5]
-armure_de_fer = ["armure", 7]
-armure_de_diamant = ["armure", 15]
-armure_de_cristal = ["armure", 20]
-slip = ["armure", 0]
+    veste_en_cuir = ["armure", 3]
+    gilet_jaune = ["armure", 30]
+    armure_en_or = ["armure", 10]
+    armure_de_bois = ["armure", 5]
+    armure_de_fer = ["armure", 7]
+    armure_de_diamant = ["armure", 15]
+    armure_de_cristal = ["armure", 20]
+    slip = ["armure", 0]
 
-bouteille_eau = ['potion', 'bouteille_eau', 1]
-bouteille_whisky = ['potion', 'bouteille_whisky', 2]
-poison = ['potion', 'poison', -8]
-potion_guerison = ['potion', 'potion_guerison', 10]
+    bouteille_eau = ['potion', 'bouteille_eau', 1]
+    bouteille_whisky = ['potion', 'bouteille_whisky', 2]
+    poison = ['potion', 'poison', -8]
+    potion_guerison = ['potion', 'potion_guerison', 10]
 
-def __init__(self,arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau, veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal):
-        self.armes = [arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau]
-        self.armures = [veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal, slip]
+    def __init__(self,arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau, veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal):
+            self.armes = [arme_de_base, épée, hache, lance, baton, dague, arc, arbalète, fronde, marteau]
+            self.armures = [veste_en_cuir, gilet_jaune, armure_en_or, armure_de_bois, armure_de_fer, armure_de_diamant, armure_de_cristal, slip]
 
 class Sac(Objets):
     def __init__ (self):
@@ -55,10 +55,11 @@ class Sac(Objets):
         self.gold += gold
 
 class Joueur ():
-    def __init__(self, x, y):
+    def __init__(self, x, y, sac):
         self.coord_x = x
         self.coord_y = y
         self.points = 10
+        self.sac = sac
     def move(self, new_position):
         x, y = new_position
         self.coord_x = x
@@ -74,13 +75,11 @@ class Enemy ():
         self.coord_y = y
         self.points = pv
         self.stuff = stuff
-    def hit(self, points):
+    def hit(self, points, joueur):
         self.points -= points
         if self.points <= 0 :
-            self.death()
-    def death(self):
-        for objet in self.stuff :
-            pass
+            for objet in self.stuff :
+                joueur.sac.add_object(objet)
 
 
 
@@ -227,7 +226,7 @@ def event(key, joueur, map):
 def main():
     map = arena(30,30)
     sac = Sac()
-    joueur = Joueur(27,5)
+    joueur = Joueur(27, 5, sac)
     map[joueur.coord_x][joueur.coord_y] = "@"
     sac_ouvert = False
     WAIT = True
