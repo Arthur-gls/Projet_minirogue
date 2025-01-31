@@ -30,7 +30,36 @@ class Sac(Objets):
         self.armes = [Objets.arme_de_base]
         self.armures = []
         self.potions = []
-        self.sac_ouvert = False
+
+class Joueur ():
+    def __init__(self, x, y):
+        self.coord_x = x
+        self.coord_y = y
+        self.points = 10
+    def move(self, new_position):
+        x, y = new_position
+        self.coord_x = x
+        self.coord_y = y
+    def add_points(self, points):
+        self.points += points
+    def hit(self, points):
+        self.points -= points
+
+class Enemy ():
+    def __init__(self, x, y, pv, stuff):
+        self.coord_x = x
+        self.coord_y = y
+        self.points = pv
+        self.stuff = stuff
+    def hit(self, points):
+        self.points -= points
+        if self.points <= 0 :
+            self.death()
+    def death(self):
+        for objet in stuff :
+            #ajouter au sac
+            pass
+
 
 
 # Données de l'arène
@@ -71,10 +100,10 @@ def porte(map, i, j):
 
 def couloir(map, i1, j1, i2, j2, direction):
     if direction == "h":
-        for j in (j1 + 1, j2):
+        for j in range(j1 + 1, j2):
             map[i1][j] = COULOIR
     elif direction == "v":
-        for i in (i1 + 1, i2):
+        for i in range(i1 + 1, i2):
             map[i][j1] = COULOIR
 
     return map
@@ -102,12 +131,21 @@ def arena(LENGHT, WIDTH):
 
 #print(arena(LENGHT, WIDTH))
 
+import random as rd
 
+def random_arena(l,w):
+    pass
 
 
 nested_list = [
     ['-', '-', '-', '-', '-', '-', '-', '-'],
-    ['|', '1', '2', '3', '4', '5', '6', '|'],
+    ['|', '1', '1', '1', '2', '1', '1', '|'],
+    ['-', '-', '-', '-', '-', '-', '-', '-']
+]
+
+nested_list2 = [
+    ['-', '-', '-', '-', '-', '-', '-', '-'],
+    ['|', '1', '1', '1', '1', '2', '1', '|'],
     ['-', '-', '-', '-', '-', '-', '-', '-']
 ]
 
@@ -128,11 +166,9 @@ TYPES = {'-' : 'wall', ' ': 'wall', '|' : 'wall', '.' : 'room', '#' : 'corridor'
          'j' : 'potion', "!" : "sword", ")" : "bow"}
 
 
-def get_position(arene):
-    return position
 
-def next_position(key, position):
-    x, y = position
+def move (key, joueur):
+    x, y = joueur.coord_x, joueur.coord_y
     if key == 'left' :
         next_position = x - 1, y
     if key == 'right' :
@@ -140,30 +176,41 @@ def next_position(key, position):
     if key == 'up' :
         next_position = x, y - 1
     if key == 'down' :
-        next_position = x, y + 1
-    return next_position
+        next_move = x, y - 1
+    return(next_move)
 
-def valid_move(key, position):
-    next_position = next_position(key, position)
-    next_type = TYPES(map[next_position])
-    if next_type not in ("wall"):
-        return True
-
-def event(key, position):
-    print("faire la suite")
 
 def main():
     sac = Sac()
     joueur = Joueur(5,5)
+    joueur = Joueur(5,5)
+    sac_ouvert = False
     WAIT = True
     while WAIT :
         # Wait for the next event.
-        key_pressed = keyboard.read_event()
-        if key_pressed.event_type == keyboard.KEY_DOWN :
-            key = key_pressed.name
+        event = keyboard.read_event()
+        if event.event_type == keyboard.KEY_DOWN :
+            key = event.name
+            
+        next_move = move(key, joueur)
+        next_type = TYPES(map[next_move])
+
+        if next_type in ('room', 'door', 'corridor', 'staircase'):
+            joueur.move(next_move)
+
         
-        if valid_move(key, position):
-            event(key, position)
    
+import time
+import os 
+print_bg(nested_list)
+time.sleep(0.2)
+os.system("cls")
+print_bg(nested_list2)
+time.sleep(0.2)
+os.system("cls")
+print_bg(nested_list)
+time.sleep(0.2)
+os.system("cls")
+print_bg(nested_list2)
 
 main()
