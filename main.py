@@ -206,6 +206,7 @@ def event(key, joueur, map):
             map[ancien_x][ancien_y] = "." # On remet le point de départ à sa valeur initiale
             map[joueur.coord_x][joueur.coord_y] = "@"
 
+
 def main():
     map = arena(30,30)
     sac = Sac()
